@@ -1,22 +1,7 @@
 import openpyxl as op
 import time
+import CONSTANTS
 
-
-SKU_NOSIZE_TYPE = [
-    'Бейсболка', 'Шапка', 'Нагрудник', 'Боди',
-    'Кошелек', 'Минибаул', 'Сумка', 'Полотенце',
-    'Мешок', 'Кружка', 'Рюкзак', 'Шарф',
-    'Перчатки', 'Значок', 'Косметичка', 'Чехол',
-    'Мини-джерси', 'Шайба', 'Значок', 'Магнит',
-    'Вымпел', 'Артикул', 'Брелок', 'Нагрудный',
-    'Маска',
-]
-
-COLUMN_NAME = [
-    'Артикул', 'Наименование',
-    'OZON', 'NHL', 
-    'KHL', 'RUSSIA', 'FOOTBALL', 'Итог'
-]
 
 
 print('\nНапоминание! Все обрабатываемые файлы должны находиться в подпапке /tables/\n\
@@ -61,7 +46,7 @@ for row in sheet_ozon.iter_rows(min_row=2, max_row=max_rows_ozon, values_only=Tr
 print('Создаем новый лист "result"...')
 wb_ozon.create_sheet('result')
 result_sheet = wb_ozon['result']
-result_sheet.append(COLUMN_NAME)
+result_sheet.append(CONSTANTS.COLUMN_NAME)
 
 
 print('Создаем опорную таблицу...')
@@ -89,15 +74,19 @@ sheet_nhl = wb_nhl.active
 max_rows_nhl = sheet_nhl.max_row
 nhl_dict = {}
 
+wb_ozon.create_sheet('NHL')
+nhl_sheet = wb_ozon['NHL']
+nhl_sheet.append(CONSTANTS.COLUMN_NAME_ADDITIONAL_SHEET)
+
 
 print(f'Извлечение значений из таблиц {file_nhl}...')
-for row_nhl in sheet_nhl.iter_rows(min_row=10, max_row=max_rows_nhl, values_only=True):
+for row_nhl in sheet_nhl.iter_rows(min_row=8, max_row=max_rows_nhl, values_only=True):
     row_nhl_pk = row_nhl[14] if row_nhl[14] != None else 'None'
     while row_nhl_pk.startswith('0'):
         row_nhl_pk = row_nhl_pk[1:]
     if row_nhl_pk == 'None':
         continue
-    elif str(row_nhl_pk).split(' ')[1] in SKU_NOSIZE_TYPE:
+    elif str(row_nhl_pk).split(' ')[1] in CONSTANTS.SKU_NOSIZE_TYPE:
         sku_nhl = str(row_nhl_pk).split(' ')
         sku_nhl_f = sku_nhl[0]
         print(sku_nhl_f + '- Done')
@@ -109,6 +98,9 @@ for row_nhl in sheet_nhl.iter_rows(min_row=10, max_row=max_rows_nhl, values_only
         sku_nhl_f = '-'.join([sku_nhl[0], sku_nhl_v])
         print(sku_nhl_f + '- Done!')
         nhl_dict[sku_nhl_f] = row_nhl[16]
+    nhl_add_sheet = [sku_nhl_f, row_nhl[14], row_nhl[16]]
+    nhl_sheet.append(nhl_add_sheet)
+
 
 print(f'Сопоставление значений таблиц {file_nhl}...')
 i_nhl_add = 2
@@ -130,14 +122,19 @@ sheet_khl = wb_khl.active
 max_rows_khl = sheet_khl.max_row
 khl_dict = {}
 
+wb_ozon.create_sheet('KHL')
+khl_sheet = wb_ozon['KHL']
+khl_sheet.append(CONSTANTS.COLUMN_NAME_ADDITIONAL_SHEET)
+
+
 print(f'Извлечение значений из таблиц {file_khl}...')
-for row_khl in sheet_khl.iter_rows(min_row=10, max_row=max_rows_khl, values_only=True):
+for row_khl in sheet_khl.iter_rows(min_row=8, max_row=max_rows_khl, values_only=True):
     row_khl_pk = row_khl[14] if row_khl[14] != None else 'None'
     while row_khl_pk.startswith('0'):
         row_khl_pk = row_khl_pk[1:]
     if row_khl_pk == 'None':
         continue
-    elif str(row_khl_pk).split(' ')[1] in SKU_NOSIZE_TYPE:
+    elif str(row_khl_pk).split(' ')[1] in CONSTANTS.SKU_NOSIZE_TYPE:
         sku_khl = str(row_khl_pk).split(' ')
         sku_khl_f = sku_khl[0]
         print(sku_khl_f + '- Done!')
@@ -149,6 +146,9 @@ for row_khl in sheet_khl.iter_rows(min_row=10, max_row=max_rows_khl, values_only
         sku_khl_f = '-'.join([sku_khl[0], sku_nhl_v])
         print(sku_khl_f + '- Done!')
         khl_dict[sku_khl_f] = row_khl[16]
+    khl_add_sheet = [sku_khl_f, row_khl[14], row_khl[16]]
+    khl_sheet.append(khl_add_sheet)
+
 
 print(f'Сопоставление значений таблиц {file_khl}...')
 i_khl_add = 2
@@ -170,14 +170,19 @@ sheet_russia = wb_russia.active
 max_rows_russia = sheet_russia.max_row
 russia_dict = {}
 
+wb_ozon.create_sheet('RUSSIA')
+russia_sheet = wb_ozon['RUSSIA']
+russia_sheet.append(CONSTANTS.COLUMN_NAME_ADDITIONAL_SHEET)
+
+
 print(f'Извлечение значений из таблиц {file_russia}...')
-for row_russia in sheet_russia.iter_rows(min_row=10, max_row=max_rows_russia, values_only=True):
+for row_russia in sheet_russia.iter_rows(min_row=8, max_row=max_rows_russia, values_only=True):
     row_russia_pk = row_russia[14] if row_russia[14] != None else 'None'
     while row_russia_pk.startswith('0'):
         row_russia_pk = row_russia_pk[1:]
     if row_russia_pk == 'None':
         continue
-    elif str(row_russia_pk).split(' ')[1] in SKU_NOSIZE_TYPE:
+    elif str(row_russia_pk).split(' ')[1] in CONSTANTS.SKU_NOSIZE_TYPE:
         sku_russia = str(row_russia_pk).split(' ')
         sku_russia_f = sku_russia[0]
         print(sku_russia_f + '- Done!')
@@ -189,6 +194,8 @@ for row_russia in sheet_russia.iter_rows(min_row=10, max_row=max_rows_russia, va
         sku_russia_f = '-'.join([sku_russia[0], sku_russia_v])
         print(sku_russia_f + '- Done!')
         russia_dict[sku_russia_f] = row_russia[16]
+    russia_add_sheet = [sku_russia_f, row_russia[14], row_russia[16]]
+    russia_sheet.append(russia_add_sheet)
 
 
 i_russia_add = 2
@@ -212,14 +219,19 @@ sheet_football = wb_football.active
 max_rows_football = sheet_football.max_row
 football_dict = {}
 
+wb_ozon.create_sheet('FOOTBALL')
+football_sheet = wb_ozon['FOOTBALL']
+football_sheet.append(CONSTANTS.COLUMN_NAME_ADDITIONAL_SHEET)
+
+
 print(f'Извлечение значений таблиц {file_football}...')
-for row_football in sheet_football.iter_rows(min_row=10, max_row=max_rows_football, values_only=True):
+for row_football in sheet_football.iter_rows(min_row=8, max_row=max_rows_football, values_only=True):
     row_football_pk = row_football[14] if row_football[14] != None else 'None'
     while row_football_pk.startswith('0'):
         row_football_pk = row_football_pk[1:]
     if row_football_pk == 'None':
         continue
-    elif str(row_football_pk).split(' ')[1] in SKU_NOSIZE_TYPE:
+    elif str(row_football_pk).split(' ')[1] in CONSTANTS.SKU_NOSIZE_TYPE:
         sku_football = str(row_football_pk).split(' ')
         sku_football_f = sku_football[0]
         print(sku_football_f + '- Done!')
@@ -231,6 +243,8 @@ for row_football in sheet_football.iter_rows(min_row=10, max_row=max_rows_footba
         sku_football_f = '-'.join([sku_football[0], sku_football_v])
         print(sku_football_f + '- Done!')
         football_dict[sku_football_f] = row_football[16]
+    football_add_sheet = [sku_football_f, row_football[14], row_football[16]]
+    football_sheet.append(football_add_sheet)
 
 
 i_football_add = 2
