@@ -13,7 +13,7 @@ SKU_NOSIZE_TYPE = [
 
 COLUMN_NAME = [
     'Артикул', 'Наименование',
-    'OZON', 'NHL', 'KHL',
+    'CUSTOMER', 'OZON', 'NHL', 'KHL',
     'RUSSIA', 'FOOTBALL', 'Итог'
 ]
 

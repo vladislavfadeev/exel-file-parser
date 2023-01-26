@@ -13,6 +13,7 @@ file_nhl = input('Укажите название файла NHL и нажмит
 file_khl = input('Укажите название файла KHL и нажмите Enter: ')
 file_russia = input('Укажите название файла RUSSIA и нажмите Enter: ')
 file_football = input('Укажите название файла FOOTBALL и нажмите Enter: ')
+file_customer_order = input('Укажите название файла CUSTOMER_ORDER и нажмите Enter: ')
 
 
 
@@ -39,8 +40,9 @@ for row in sheet_ozon.iter_rows(min_row=2, max_row=max_rows_ozon, values_only=Tr
         ozon_dict[sku_ozon_f] = []
         ozon_keys_list.append(sku_ozon_f)
 
-    ozon_dict[sku_ozon_f].append(row[3])
-    ozon_dict[sku_ozon_f].append(int(row[4]))
+    extend_list = [row[3], 0, int(row[4])]
+    ozon_dict[sku_ozon_f].extend(extend_list)
+
 
 
 print('Создаем новый лист "result"...')
@@ -107,10 +109,10 @@ i_nhl_add = 2
 for row_chek_nhl in result_sheet.iter_rows(min_row=2, max_row=result_max_row, values_only=True):
     if row_chek_nhl[0] in nhl_dict:
         value = nhl_dict[row_chek_nhl[0]]
-        result_sheet.cell(row=i_nhl_add, column=4).value = int(value)
+        result_sheet.cell(row=i_nhl_add, column=5).value = int(value)
         i_nhl_add +=1
     else:
-        result_sheet.cell(row=i_nhl_add, column=4).value = 0
+        result_sheet.cell(row=i_nhl_add, column=5).value = 0
         i_nhl_add +=1
     
 # //////////////////////////////////////////// KHL //////////////////////////////////////////////
@@ -155,10 +157,10 @@ i_khl_add = 2
 for row_chek_khl in result_sheet.iter_rows(min_row=2, max_row=result_max_row, values_only=True):
     if row_chek_khl[0] in khl_dict:
         value = khl_dict[row_chek_khl[0]]
-        result_sheet.cell(row=i_khl_add, column=5).value = int(value)
+        result_sheet.cell(row=i_khl_add, column=6).value = int(value)
         i_khl_add +=1
     else:
-        result_sheet.cell(row=i_khl_add, column=5).value = 0
+        result_sheet.cell(row=i_khl_add, column=6).value = 0
         i_khl_add +=1
 
 # //////////////////////////////////////////// RUSSIA //////////////////////////////////////////////
@@ -203,10 +205,10 @@ print(f'Сопоставление значений таблиц {file_russia}..
 for row_chek_russia in result_sheet.iter_rows(min_row=2, max_row=result_max_row, values_only=True):
     if row_chek_russia[0] in russia_dict:
         value = russia_dict[row_chek_russia[0]]
-        result_sheet.cell(row=i_russia_add, column=6).value = int(value)
+        result_sheet.cell(row=i_russia_add, column=7).value = int(value)
         i_russia_add +=1
     else:
-        result_sheet.cell(row=i_russia_add, column=6).value = 0
+        result_sheet.cell(row=i_russia_add, column=7).value = 0
         i_russia_add +=1
 
 
@@ -252,18 +254,67 @@ print(f'Сопоставление значений таблиц {file_football}
 for row_chek_football in result_sheet.iter_rows(min_row=2, max_row=result_max_row, values_only=True):
     if row_chek_football[0] in football_dict:
         value = football_dict[row_chek_football[0]]
-        result_sheet.cell(row=i_football_add, column=7).value = int(value)
+        result_sheet.cell(row=i_football_add, column=8).value = int(value)
         i_football_add +=1
     else:
-        result_sheet.cell(row=i_football_add, column=7).value = 0
+        result_sheet.cell(row=i_football_add, column=8).value = 0
         i_football_add +=1
 
+
+# //////////////////////////////////////////// CUSTOMER ORDER //////////////////////////////////////////////
+
+print(f'Открываем {file_customer_order}, импортируем таблицы...')
+file_customer_order_pars = f'tables\\{file_customer_order}'
+wb_customer = op.load_workbook(file_customer_order_pars, data_only=True)
+sheet_customer = wb_customer.active
+max_rows_customer = sheet_customer.max_row
+customer_dict = {}
+
+wb_ozon.create_sheet('CUSTOMER')
+customer_sheet = wb_ozon['CUSTOMER']
+customer_sheet.append(CONSTANTS.COLUMN_NAME_ADDITIONAL_SHEET)
+
+
+for row_customer in sheet_customer.iter_rows(min_row=1, max_row=max_rows_customer, values_only=True):
+    if isinstance(row_customer[1], int):
+        row_cuctomer_pk = row_customer[17]
+        while row_cuctomer_pk.startswith('0'):
+            row_cuctomer_pk = row_cuctomer_pk[1:]
+        if str(row_cuctomer_pk).split(' ')[1] in CONSTANTS.SKU_NOSIZE_TYPE:
+            sku_customer = str(row_cuctomer_pk).split(' ')
+            sku_customer_f = sku_customer[0]
+            print(sku_customer_f + '- Done!')
+            customer_dict[sku_customer_f] = row_customer[57]
+        else:
+            sku_customer = str(row_cuctomer_pk).split(' ')
+            sku_customer_v = sku_customer[-3]
+            sku_customer_v = sku_customer_v.replace('-', '/') if '-' in sku_customer_v else sku_customer_v
+            sku_customer_f = '-'.join([sku_customer[0], sku_customer_v])
+            print(sku_customer_f + '- Done!')
+            customer_dict[sku_customer_f] = row_customer[57]
+        customer_add_sheet = [sku_customer_f, row_customer[17], row_customer[57]]
+        customer_sheet.append(customer_add_sheet)
+
+
+i_customer_add = 2
+print(f'Сопоставление значений таблиц {file_customer_order}...')
+for row_chek_customer in result_sheet.iter_rows(min_row=2, max_row=result_max_row, values_only=True):
+    if row_chek_customer[0] in customer_dict:
+        value = customer_dict[row_chek_customer[0]]
+        result_sheet.cell(row=i_customer_add, column=3).value = int(value)
+        i_customer_add +=1
+    else:
+        result_sheet.cell(row=i_customer_add, column=3).value = 0
+        i_customer_add +=1
+
+
+# //////////////////////////////////////////// SUM COLUMN //////////////////////////////////////////////
 
 print('Расчет столбца "Итог" ')
 i_sum = 2
 for sum_row in result_sheet.iter_rows(min_row=2, max_row=result_max_row, values_only=True):
     final_sum = sum([int(sum_row[3]), int(sum_row[4]), int(sum_row[5]), int(sum_row[6])])
-    result_sheet.cell(row=i_sum, column=8).value = final_sum
+    result_sheet.cell(row=i_sum, column=9).value = final_sum
     i_sum += 1
 
 
