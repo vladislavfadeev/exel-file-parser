@@ -313,7 +313,7 @@ for row_chek_customer in result_sheet.iter_rows(min_row=2, max_row=result_max_ro
 print('Расчет столбца "Итог" ')
 i_sum = 2
 for sum_row in result_sheet.iter_rows(min_row=2, max_row=result_max_row, values_only=True):
-    final_sum = sum([int(sum_row[3]), int(sum_row[4]), int(sum_row[5]), int(sum_row[6])])
+    final_sum = sum([int(sum_row[4]), int(sum_row[5]), int(sum_row[6]), int(sum_row[7])])
     result_sheet.cell(row=i_sum, column=9).value = final_sum
     i_sum += 1
 
