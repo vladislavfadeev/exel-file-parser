@@ -145,7 +145,7 @@ for row_khl in sheet_khl.iter_rows(min_row=8, max_row=max_rows_khl, values_only=
         sku_khl = str(row_khl_pk).split(' ')
         sku_khl_v = sku_khl[-3]
         sku_khl_v = sku_khl_v.replace('-', '/') if '-' in sku_khl_v else sku_khl_v
-        sku_khl_f = '-'.join([sku_khl[0], sku_nhl_v])
+        sku_khl_f = '-'.join([sku_khl[0], sku_khl_v])
         print(sku_khl_f + '- Done!')
         khl_dict[sku_khl_f] = row_khl[16]
     khl_add_sheet = [sku_khl_f, row_khl[14], row_khl[16]]
@@ -240,7 +240,7 @@ for row_football in sheet_football.iter_rows(min_row=8, max_row=max_rows_footbal
         football_dict[sku_football_f] = row_football[16]
     else:
         sku_football = str(row_football_pk).split(' ')
-        sku_football_v = sku_russia[-3]
+        sku_football_v = sku_football[-3]
         sku_football_v = sku_football_v.replace('-', '/') if '-' in sku_football_v else sku_football_v
         sku_football_f = '-'.join([sku_football[0], sku_football_v])
         print(sku_football_f + '- Done!')
