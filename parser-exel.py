@@ -17,7 +17,7 @@ file_customer_order = input('Укажите название файла CUSTOMER
 
 
 
-# //////////////////////////////////////////// PIVOT TABLE //////////////////////////////////////////////
+# //////////////////////////////////////////// REFERENSE TABLE //////////////////////////////////////////////
 
 print(f'Открываем файл {file_ozon}...')
 file_ozon_pars = f'tables\\{file_ozon}'
@@ -40,7 +40,7 @@ for row in sheet_ozon.iter_rows(min_row=2, max_row=max_rows_ozon, values_only=Tr
         ozon_dict[sku_ozon_f] = []
         ozon_keys_list.append(sku_ozon_f)
 
-    extend_list = [row[3], 0, int(row[4])]
+    extend_list = [row[3], 0, int(row[6]), 0, int(row[10])]
     ozon_dict[sku_ozon_f].extend(extend_list)
 
 
@@ -109,10 +109,10 @@ i_nhl_add = 2
 for row_chek_nhl in result_sheet.iter_rows(min_row=2, max_row=result_max_row, values_only=True):
     if row_chek_nhl[0] in nhl_dict:
         value = nhl_dict[row_chek_nhl[0]]
-        result_sheet.cell(row=i_nhl_add, column=5).value = int(value)
+        result_sheet.cell(row=i_nhl_add, column=10).value = int(value)
         i_nhl_add +=1
     else:
-        result_sheet.cell(row=i_nhl_add, column=5).value = 0
+        result_sheet.cell(row=i_nhl_add, column=10).value = 0
         i_nhl_add +=1
     
 # //////////////////////////////////////////// KHL //////////////////////////////////////////////
@@ -157,10 +157,10 @@ i_khl_add = 2
 for row_chek_khl in result_sheet.iter_rows(min_row=2, max_row=result_max_row, values_only=True):
     if row_chek_khl[0] in khl_dict:
         value = khl_dict[row_chek_khl[0]]
-        result_sheet.cell(row=i_khl_add, column=6).value = int(value)
+        result_sheet.cell(row=i_khl_add, column=11).value = int(value)
         i_khl_add +=1
     else:
-        result_sheet.cell(row=i_khl_add, column=6).value = 0
+        result_sheet.cell(row=i_khl_add, column=11).value = 0
         i_khl_add +=1
 
 # //////////////////////////////////////////// RUSSIA //////////////////////////////////////////////
@@ -205,10 +205,10 @@ print(f'Сопоставление значений таблиц {file_russia}..
 for row_chek_russia in result_sheet.iter_rows(min_row=2, max_row=result_max_row, values_only=True):
     if row_chek_russia[0] in russia_dict:
         value = russia_dict[row_chek_russia[0]]
-        result_sheet.cell(row=i_russia_add, column=7).value = int(value)
+        result_sheet.cell(row=i_russia_add, column=12).value = int(value)
         i_russia_add +=1
     else:
-        result_sheet.cell(row=i_russia_add, column=7).value = 0
+        result_sheet.cell(row=i_russia_add, column=12).value = 0
         i_russia_add +=1
 
 
@@ -254,10 +254,10 @@ print(f'Сопоставление значений таблиц {file_football}
 for row_chek_football in result_sheet.iter_rows(min_row=2, max_row=result_max_row, values_only=True):
     if row_chek_football[0] in football_dict:
         value = football_dict[row_chek_football[0]]
-        result_sheet.cell(row=i_football_add, column=8).value = int(value)
+        result_sheet.cell(row=i_football_add, column=13).value = int(value)
         i_football_add +=1
     else:
-        result_sheet.cell(row=i_football_add, column=8).value = 0
+        result_sheet.cell(row=i_football_add, column=13).value = 0
         i_football_add +=1
 
 
@@ -313,9 +313,12 @@ for row_chek_customer in result_sheet.iter_rows(min_row=2, max_row=result_max_ro
 print('Расчет столбца "Итог" ')
 i_sum = 2
 for sum_row in result_sheet.iter_rows(min_row=2, max_row=result_max_row, values_only=True):
-    final_sum = sum([int(sum_row[4]), int(sum_row[5]), int(sum_row[6]), int(sum_row[7])])
-    result_sheet.cell(row=i_sum, column=9).value = final_sum
+    final_sum = sum([int(sum_row[9]), int(sum_row[10]), int(sum_row[11]), int(sum_row[12])])
+    result_sheet.cell(row=i_sum, column=5).value = final_sum
     i_sum += 1
+
+
+result_sheet.delete_cols(10, 13)
 
 
 
